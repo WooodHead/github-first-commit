@@ -13,3 +13,6 @@
 <p>
 Inspired by: <a href='http://first-commit.com/'>http://first-commit.com/</a>, <a href='https://news.ycombinator.com/item?id=10610065'>https://news.ycombinator.com/item?id=10610065</a>
 </p>
+<p>
+See also: <a href='https://github.com/FarhadG/init'>https://github.com/FarhadG/init</a>
+</p>
