@@ -1,23 +1,20 @@
-
 //alert('content script');
 
-const COMMITS_PER_PAGE = 35;
+//const COMMITS_PER_PAGE = 35;
 
-var currentUrl=document.location.href;
-var repoExp=RegExp(/https:\/\/github\.com\/.*?\/.*?\//i);
-var commitExp=RegExp(/https:\/\/github\.com\/.*?\/.*?\/.*?\/.*?(?=\?|$)/i);
+var currentUrl = document.location.href;
+var repoExp = RegExp(/https:\/\/github\.com\/.*?\/.*?\//i);
+var commitExp = RegExp(/https:\/\/github\.com\/.*?\/.*?\/.*?\/.*?(?=\?|$)/i);
 
 //url
-var repo=repoExp.exec(currentUrl);
-var commitBase=commitExp.exec(currentUrl);
+var repo = repoExp.exec(currentUrl);
+var commitBase = commitExp.exec(currentUrl);
 
 function getRepoCommitsCount(repo) {
-
     var xhr = new XMLHttpRequest();
     xhr.open("GET", repo, false);
     xhr.send();
     var result = xhr.responseText;
-    console.log(result);
 
     var tempHtml = document.createElement('html');
     tempHtml.innerHTML = result;
@@ -32,14 +29,15 @@ function getRepoCommitsCount(repo) {
 }
 
 function getLastPageUrl(repo, num_of_commits) {
-	
-    var first_page = Math.ceil(num_of_commits / COMMITS_PER_PAGE);
-    return commitBase+'?page=' + first_page;
+
+    var first_page = Math.ceil(num_of_commits / 35);
+
+    return commitBase + '?page=' + first_page;
 }
 
 function gotoFirst() {
-	var firstPageUrl=commitBase+'?page=1';
-	    chrome.runtime.sendMessage({redirect: firstPageUrl});
+    var firstPageUrl = commitBase + '?page=1';
+    chrome.runtime.sendMessage({redirect: firstPageUrl});
 }
 
 function gotoLast() {
@@ -48,18 +46,30 @@ function gotoLast() {
     chrome.runtime.sendMessage({redirect: lastPageUrl});
 }
 
-var buttonDiv = document.getElementsByClassName('pagination');
+function addButtons() {
 
-var firstPage = document.createElement('a');
-var lastPage = document.createElement('a');
+    var buttonDiv = document.getElementsByClassName('pagination');
 
-firstPage.addEventListener('click', gotoFirst);
-lastPage.addEventListener('click', gotoLast);
+    var firstPage = document.createElement('a');
+    var lastPage = document.createElement('a');
 
-firstPage.innerHTML = 'First Page';
-lastPage.innerHTML = 'Last Page';
+    firstPage.addEventListener('click', gotoFirst);
+    lastPage.addEventListener('click', gotoLast);
 
-buttonDiv[0].insertBefore(firstPage, buttonDiv[0].firstChild);
-buttonDiv[0].appendChild(lastPage);
+    firstPage.innerHTML = 'First Page';
+    lastPage.innerHTML = 'Last Page';
+    firstPage.setAttribute('id', 'firstPage');
+    lastPage.setAttribute('id', 'lastPage');
 
+    if (buttonDiv[0] !== undefined) {
+        buttonDiv[0].insertBefore(firstPage, buttonDiv[0].firstChild);
+        buttonDiv[0].appendChild(lastPage);
+    }
+}
 
+var firstButton = document.getElementById('firstPage');
+
+if (!firstButton) {
+    addButtons();
+}
+	
