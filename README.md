@@ -16,3 +16,10 @@ Inspired by: <a href='http://first-commit.com/'>http://first-commit.com/</a>, <a
 <p>
 See also: <a href='https://github.com/FarhadG/init'>https://github.com/FarhadG/init</a>
 </p>
+
+<p>TODO:
+<ol>
+<li>使FirstPage在第一页不可用，LastPage在最后一页不可用</li>
+<li>修复Bug：Issues界面也会显示两个按钮</li>
+</ol>
+</p>
