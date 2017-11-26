@@ -1,80 +1,94 @@
-//const COMMITS_PER_PAGE = 35;
-var currentUrl = document.location.href;
-var repoExp = RegExp(/https:\/\/github\.com\/.*?\/.*?\//i);
-var commitExp = RegExp(/https:\/\/github\.com\/.*?\/.*?\/.*?\/.*?(?=\?|$)/i);
-//url
-var repo = repoExp.exec(currentUrl);
-var commitBase = commitExp.exec(currentUrl);
 var total = 0
 var firstUrl = ''
 var lastUrl = ''
 
 function getRepoCommitsCount(url) {
   return new Promise(function(resolve, reject) {
-    $.get(url, function(data) {
-      var tempHtml = document.createElement('html');
-      tempHtml.innerHTML = data
-      var numEle = tempHtml.getElementsByClassName('numbers-summary')[0]
-        .getElementsByClassName('commits')[0]
-        .getElementsByClassName('num')[0]
-      var num_str = numEle.innerHTML.trim()
-      var num = parseInt(num_str.replace(/,/g, ''), 10)
-      resolve(num)
-    })
+    var xhr = new XMLHttpRequest()
+    xhr.open("GET", url, true)
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4) {
+        var status = xhr.status
+        if ((status >= 200 && status <= 300) || status === 304) {
+          var data = xhr.responseText
+          var tempHtml = document.createElement('html')
+          tempHtml.innerHTML = data
+          var numEle = tempHtml.getElementsByClassName('numbers-summary')[0]
+            .getElementsByClassName('commits')[0]
+            .getElementsByClassName('num')[0]
+          var num_str = numEle.innerHTML.trim()
+          var num = parseInt(num_str.replace(/,/g, ''), 10)
+          resolve(num)
+        }
+      }
+    }
+    xhr.send()
   })
-}
-
-function getLastPageUrl(repo, num_of_commits) {
-  var first_page = Math.ceil(num_of_commits / 35);
-  return commitBase + '?page=' + first_page;
 }
 
 function gotoFirst() {
   chrome.runtime.sendMessage({ redirect: firstUrl })
-  var button = document.getElementById('first-page')
-  button.className = 'disabled'
 }
 
 function gotoLast() {
   chrome.runtime.sendMessage({ redirect: lastUrl })
-  var button = document.getElementById('last-page')
-  button.className = 'disabled'
 }
 
 function addButtons() {
-  var buttonDiv = document.getElementsByClassName('pagination');
-  var firstPage = document.createElement('a');
-  var lastPage = document.createElement('a');
-  firstPage.setAttribute('id', 'first-page');
-  lastPage.setAttribute('id', 'last-page');
-  firstPage.innerHTML = 'First Page';
-  lastPage.innerHTML = 'Last Page';
-  firstPage.addEventListener('click', gotoFirst);
-  lastPage.addEventListener('click', gotoLast);
-  if (buttonDiv[0] !== undefined) {
-    buttonDiv[0].insertBefore(firstPage, buttonDiv[0].firstChild);
-    buttonDiv[0].appendChild(lastPage);
+  var buttonDiv = document.getElementsByClassName('pagination')
+  if (buttonDiv) {
+    var firstButton = document.createElement('a')
+    var lastButton = document.createElement('a')
+    firstButton.setAttribute('id', 'first-page')
+    lastButton.setAttribute('id', 'last-page')
+    firstButton.innerHTML = 'First Page'
+    lastButton.innerHTML = 'Last Page'
+    firstButton.addEventListener('click', gotoFirst)
+    lastButton.addEventListener('click', gotoLast)
+
+    buttonDiv[0].insertBefore(firstButton, buttonDiv[0].firstChild)
+    buttonDiv[0].appendChild(lastButton)
+
+    var newerButton = firstButton.nextElementSibling
+    if (newerButton.classList.contains('disabled')) {
+      firstButton.className = 'disabled'
+    }
+
+    var olderButton = newerButton.nextElementSibling
+
+    if (olderButton.classList.contains('disabled')) {
+      lastButton.className = 'disabled'
+    }
   }
 }
 
+function updateButtonStatus() {
+  var firstPage = document.createElement('a')
+  var lastPage = document.createElement('a')
+}
+
 function main() {
-  var firstButton = document.getElementById('first-page');
-  if (!firstButton) {
+  var firstButton = document.getElementById('first-page')
+  var buttonDiv = document.getElementsByClassName('pagination')
+
+  if (buttonDiv.length && !firstButton) {
     addButtons()
     var url = window.location.href
-    var re = /https:\/\/github\.com\/([a-zA-Z0-9_.-]+)\/([a-zA-Z0-9_.-]+)\/commits\/([a-z]+)(\?after=)?([a-zA-Z0-9]+)?\+?(\d+)?/
+    var re = /https:\/\/github\.com\/([a-zA-Z0-9_.-]+)\/([a-zA-Z0-9_.-]+)\/commits\/([a-z]+)(\?(after|before)=)?([a-zA-Z0-9]+)?\+?(\d+)?/
     var match = re.exec(url)
     var user
     var repo
     var branch
     var hash
     var skip
+    var direction
     if (match) {
       user = match[1]
       repo = match[2]
       branch = match[3]
-      hash = match[5]
-      skip = match[6]
+      direction = match[5]
+      hash = match[6]
+      skip = match[7]
       if (!hash) {
         var commit = document.getElementsByClassName('commit')[0]
         if (commit) {
@@ -89,8 +103,8 @@ function main() {
       var mainUrl = 'https://github.com/' + user + '/' + repo
       firstUrl = 'https://github.com/' + user + '/' + repo + '/commits/' + branch
       var lastSkip = 0
-      getRepoCommitsCount(mainUrl).then(function(c) {
-        total = c
+      getRepoCommitsCount(mainUrl).then(function(count) {
+        total = count
         lastSkip = total - 35
         lastUrl = 'https://github.com/' + user + '/' + repo + '/commits/' + branch + '?after=' + hash + '+' + lastSkip
       })
