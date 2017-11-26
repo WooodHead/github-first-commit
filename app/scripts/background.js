@@ -1,3 +1,5 @@
+import 'chromereload/devonly'
+
 chrome.tabs.onUpdated.addListener(function(tabid, changeInfo, tab) {
   if (changeInfo.status && changeInfo.status === 'complete') {
     console.log('changeInfo', changeInfo)
@@ -10,14 +12,13 @@ chrome.tabs.onUpdated.addListener(function(tabid, changeInfo, tab) {
       }
     })
   }
-
 })
 
 chrome.webNavigation.onHistoryStateUpdated.addListener(function(details) {
   console.log('details', details)
   chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
     var tab = tabs[0]
-    chrome.tabs.executeScript(tab.id, { file: "scripts/inject.js" })
+    // chrome.tabs.executeScript(tab.id, { file: "scripts/inject.js" })
   })
 })
 

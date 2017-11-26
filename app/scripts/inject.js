@@ -1,2 +1,2 @@
-import common from './common.js'
-common()
+import main from './main.js'
+main()

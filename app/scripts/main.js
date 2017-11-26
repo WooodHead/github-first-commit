@@ -30,21 +30,18 @@ function getLastPageUrl(repo, num_of_commits) {
 }
 
 function gotoFirst() {
-  console.log('first')
   chrome.runtime.sendMessage({ redirect: firstUrl })
   var button = document.getElementById('first-page')
   button.className = 'disabled'
 }
 
 function gotoLast() {
-  console.log('last')
   chrome.runtime.sendMessage({ redirect: lastUrl })
   var button = document.getElementById('last-page')
   button.className = 'disabled'
 }
 
 function addButtons() {
-  console.log('addButtons')
   var buttonDiv = document.getElementsByClassName('pagination');
   var firstPage = document.createElement('a');
   var lastPage = document.createElement('a');
@@ -61,44 +58,42 @@ function addButtons() {
 }
 
 function main() {
-  var url = window.location.href
-  var re = /https:\/\/github\.com\/([a-zA-Z0-9_.-]+)\/([a-zA-Z0-9_.-]+)\/commits\/([a-z]+)(\?after=)?([a-zA-Z0-9]+)?\+?(\d+)?/
-  var match = re.exec(url)
-  console.log('match', match)
-  var user
-  var repo
-  var branch
-  var hash
-  var skip
-  if (match) {
-    user = match[1]
-    repo = match[2]
-    branch = match[3]
-    hash = match[5]
-    skip = match[6]
-    if (!hash) {
-      var commit = document.getElementsByClassName('commit')[0]
-      var channel = commit.getAttribute('data-channel')
-      var hashRe = /commit:([a-zA-Z0-9]+)$/
-      var hashMatch = hashRe.exec(channel)
-      if (hashMatch) {
-        hash = hashMatch[1]
+  var firstButton = document.getElementById('first-page');
+  if (!firstButton) {
+    addButtons()
+    var url = window.location.href
+    var re = /https:\/\/github\.com\/([a-zA-Z0-9_.-]+)\/([a-zA-Z0-9_.-]+)\/commits\/([a-z]+)(\?after=)?([a-zA-Z0-9]+)?\+?(\d+)?/
+    var match = re.exec(url)
+    var user
+    var repo
+    var branch
+    var hash
+    var skip
+    if (match) {
+      user = match[1]
+      repo = match[2]
+      branch = match[3]
+      hash = match[5]
+      skip = match[6]
+      if (!hash) {
+        var commit = document.getElementsByClassName('commit')[0]
+        if (commit) {
+          var channel = commit.getAttribute('data-channel')
+          var hashRe = /commit:([a-zA-Z0-9]+)$/
+          var hashMatch = hashRe.exec(channel)
+          if (hashMatch) {
+            hash = hashMatch[1]
+          }
+        }
       }
-      console.log('hash', hash)
-    }
-    var mainUrl = 'https://github.com/' + user + '/' + repo
-    firstUrl = 'https://github.com/' + user + '/' + repo + '/commits/' + branch
-    var lastSkip = 0
-    getRepoCommitsCount(mainUrl).then(function(c) {
-      console.log('c', c)
-      total = c
-      lastSkip = total - 35
-      console.log('lastSkip', lastSkip)
-      lastUrl = 'https://github.com/' + user + '/' + repo + '/commits/' + branch + '?after=' + hash + '+' + lastSkip
-    })
-    var firstButton = document.getElementById('firstPage');
-    if (!firstButton) {
-      addButtons()
+      var mainUrl = 'https://github.com/' + user + '/' + repo
+      firstUrl = 'https://github.com/' + user + '/' + repo + '/commits/' + branch
+      var lastSkip = 0
+      getRepoCommitsCount(mainUrl).then(function(c) {
+        total = c
+        lastSkip = total - 35
+        lastUrl = 'https://github.com/' + user + '/' + repo + '/commits/' + branch + '?after=' + hash + '+' + lastSkip
+      })
     }
   }
 }

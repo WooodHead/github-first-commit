@@ -57,6 +57,7 @@
     "webNavigation",
     "webRequest",
     "webRequestBlocking",
-    "<all_urls>"
+    "<all_urls>",
+    "https://github.com/*"
   ]
 }
