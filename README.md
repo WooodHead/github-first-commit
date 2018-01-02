@@ -9,4 +9,4 @@ See also: <a href='https://github.com/FarhadG/init'>https://github.com/FarhadG/i
 
 ## Installation
 
-[how-to-install-a-chrome-extension-without-using-the-chrome-web-store](https://blog.hunter.io/how-to-install-a-chrome-extension-without-using-the-chrome-web-store-31902c780034)
+
