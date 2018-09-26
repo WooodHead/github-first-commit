@@ -6,8 +6,8 @@
   "manifest_version": 2,
   "default_locale": "en",
   "icons": {
-    "16": "images/icon-16.png",
-    "128": "images/icon-128.png"
+    "16": "images/icon.png",
+    "128": "images/icon.png"
   },
   "background": {
     "scripts": [
@@ -16,8 +16,8 @@
   },
   "browser_action": {
     "default_icon": {
-      "19": "images/icon-19.png",
-      "38": "images/icon-38.png"
+      "19": "images/icon.png",
+      "38": "images/icon.png"
     },
     "default_title": "__MSG_browserActionTitle__",
     "default_popup": "pages/popup.html"
@@ -37,26 +37,10 @@
     "all_frames": false
   }],
   "permissions": [
-    "bookmarks",
-    "clipboardRead",
-    "clipboardWrite",
-    "commands",
     "contentSettings",
-    "contextMenus",
-    "cookies",
-    "debugger",
     "declarativeContent",
-    "history",
-    "management",
-    "notifications",
-    "pageCapture",
-    "proxy",
     "tabCapture",
     "tabs",
-    "topSites",
-    "webNavigation",
-    "webRequest",
-    "webRequestBlocking",
     "https://github.com/*"
   ]
 }

@@ -7,6 +7,8 @@ Inspired by: <a href='http://first-commit.com/'>http://first-commit.com/</a>, <a
 
 See also: <a href='https://github.com/FarhadG/init'>https://github.com/FarhadG/init</a>
 
-## Installation
+# Install
+Chrome Web Store:
+
 
 
