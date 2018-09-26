@@ -1,7 +1,7 @@
 {
   "appName": {
-    "message": "a github first cimmit",
-    "description": "The name of the application"
+    "message": "github first cimmit",
+    "description": "github-first-cimmit"
   },
   "appShortName": {
     "message": "links",
@@ -13,6 +13,6 @@
   },
   "browserActionTitle": {
     "message": "github first commit",
-    "description": "The title of the browser action button"
+    "description": "github first cimmit"
   }
 }
