@@ -2,7 +2,7 @@
   "name": "github-first-commit",
   "private": true,
   "version": "0.1.0",
-  "description": "github-first-commit",
+  "description": "github first commit",
   "scripts": {
     "start": "npm run dev:chrome",
     "build": "npm run build:chrome",

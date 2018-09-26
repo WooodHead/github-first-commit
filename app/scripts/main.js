@@ -3,10 +3,10 @@ var firstUrl = ''
 var lastUrl = ''
 
 function getRepoCommitsCount(url) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     var xhr = new XMLHttpRequest()
     xhr.open("GET", url, true)
-    xhr.onreadystatechange = function() {
+    xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {
         var status = xhr.status
         if ((status >= 200 && status <= 300) || status === 304) {
@@ -39,32 +39,47 @@ function addButtons() {
   if (buttonDiv) {
     var firstButton = document.createElement('a')
     var lastButton = document.createElement('a')
-    firstButton.setAttribute('id', 'first-page')
-    lastButton.setAttribute('id', 'last-page')
+    firstButton.id = 'first-page'
+    lastButton.id = 'last-page'
+
     firstButton.innerHTML = 'First Page'
-    lastButton.innerHTML = 'Last Page'
-    firstButton.addEventListener('click', gotoFirst)
-    lastButton.addEventListener('click', gotoLast)
+    firstButton.className = 'disabled'
+    firstButton.disabled = true
+
+    lastButton.innerHTML = 'Wait...'
+    lastButton.className = 'disabled'
+    lastButton.disabled = true
 
     buttonDiv[0].insertBefore(firstButton, buttonDiv[0].firstChild)
     buttonDiv[0].appendChild(lastButton)
 
     var newerButton = firstButton.nextElementSibling
-    if (newerButton.classList.contains('disabled')) {
-      firstButton.className = 'disabled'
+    if (!newerButton.classList.contains('disabled')) {
+      firstButton.classList.remove('disabled')
+      firstButton.disabled = false
+      firstButton.addEventListener('click', gotoFirst)
     }
 
-    var olderButton = newerButton.nextElementSibling
-
-    if (olderButton.classList.contains('disabled')) {
-      lastButton.className = 'disabled'
-    }
   }
 }
 
-function updateButtonStatus() {
-  var firstPage = document.createElement('a')
-  var lastPage = document.createElement('a')
+function enableButtons() {
+  var buttonDiv = document.getElementsByClassName('pagination')
+  if (buttonDiv) {
+    var firstButton = document.getElementById('first-page')
+    var lastButton = document.getElementById('last-page')
+
+    var newerButton = firstButton.nextElementSibling
+    var olderButton = newerButton.nextElementSibling
+
+    lastButton.innerHTML = 'Last Page'
+    if (!olderButton.classList.contains('disabled')) {
+      lastButton.classList.remove('disabled')
+      lastButton.disabled = false
+      lastButton.addEventListener('click', gotoLast)
+    }
+
+  }
 }
 
 function main() {
@@ -73,6 +88,7 @@ function main() {
 
   if (buttonDiv.length && !firstButton) {
     addButtons()
+
     var url = window.location.href
     var re = /https:\/\/github\.com\/([a-zA-Z0-9_.-]+)\/([a-zA-Z0-9_.-]+)\/commits\/([a-z]+)(\?(after|before)=)?([a-zA-Z0-9]+)?\+?(\d+)?/
     var match = re.exec(url)
@@ -103,10 +119,12 @@ function main() {
       var mainUrl = 'https://github.com/' + user + '/' + repo
       firstUrl = 'https://github.com/' + user + '/' + repo + '/commits/' + branch
       var lastSkip = 0
-      getRepoCommitsCount(mainUrl).then(function(count) {
+      getRepoCommitsCount(mainUrl).then(function (count) {
+        // console.log('commits count', count);s
         total = count
         lastSkip = total - 35
         lastUrl = 'https://github.com/' + user + '/' + repo + '/commits/' + branch + '?after=' + hash + '+' + lastSkip
+        enableButtons()
       })
     }
   }
