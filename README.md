@@ -10,6 +10,6 @@ See also: <a href='https://github.com/FarhadG/init'>https://github.com/FarhadG/i
 # Install
 
 ## Chrome Web Store
-https://chrome.google.com/webstore/detail/github-first-cimmit/piompginjmcdekjjgobfjnoodipocmlk?hl=zh-CN
+https://chrome.google.com/webstore/detail/github-first-cimmit/piompginjmcdekjjgobfjnoodipocmlk
 
 
