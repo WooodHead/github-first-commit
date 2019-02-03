@@ -12,4 +12,6 @@ See also: <a href='https://github.com/FarhadG/init'>https://github.com/FarhadG/i
 ## Chrome Web Store
 https://chrome.google.com/webstore/detail/github-first-cimmit/piompginjmcdekjjgobfjnoodipocmlk
 
+# Demo page (after installed)
 
+https://github.com/facebook/react/commits/master
